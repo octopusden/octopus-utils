@@ -1,0 +1,6 @@
+syntax: glob
+.idea
+*.iml
+*.ipr
+*.iws
+*.log
