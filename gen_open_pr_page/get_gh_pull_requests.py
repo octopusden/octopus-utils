@@ -5,6 +5,7 @@ import argparse
 from datetime import datetime
 import csv
 import time
+import json
 
 # GitHub API base URL
 API_URL = "https://api.github.com"
