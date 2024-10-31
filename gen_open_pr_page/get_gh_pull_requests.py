@@ -15,6 +15,7 @@ def get_user_repos(username, headers):
     repos_url = f"{API_URL}/users/{username}/repos"
     response = requests.get(repos_url, headers=headers)
     if response.status_code == 200:
+        print(response)
         return response.json()
     else:
         print(f"Error fetching repositories: {response.status_code}")
