@@ -16,7 +16,6 @@ def get_user_repos(username, headers):
     repos_url = f"{API_URL}/users/{username}/repos"
     response = requests.get(repos_url, headers=headers)
     if response.status_code == 200:
-        print(json.dumps(response))
         return response.json()
     else:
         print(f"Error fetching repositories: {response.status_code}")
@@ -61,6 +60,7 @@ def human_readable_date(iso_date_str):
 # Function to list all open pull requests for a user across all repositories
 def list_open_pull_requests(username, headers):
     repos = get_user_repos(username, headers)
+    print(json.dumps(repos))
 
     # Open the CSV file for writing
     with open('gh-pr.csv', mode='w', newline='', encoding='utf-8') as file:
