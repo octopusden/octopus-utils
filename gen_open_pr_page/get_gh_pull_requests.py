@@ -5,21 +5,36 @@ import argparse
 from datetime import datetime
 import csv
 import time
+import json
 
 # GitHub API base URL
 API_URL = "https://api.github.com"
 
 
-# Function to get repositories of the user
+# Function to get repositories of the user with pagination support
 def get_user_repos(username, headers):
-    repos_url = f"{API_URL}/users/{username}/repos"
-    response = requests.get(repos_url, headers=headers)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        print(f"Error fetching repositories: {response.status_code}")
-        return []
+    repos = []
+    page = 1
 
+    while True:
+        repos_url = f"{API_URL}/users/{username}/repos"
+        params = {'page': page, 'per_page': 30}  # Adjust per_page if needed (up to 100)
+        response = requests.get(repos_url, headers=headers, params=params)
+
+        if response.status_code == 200:
+            page_data = response.json()
+            repos.extend(page_data)
+
+            # Break the loop if the current page has fewer than 30 repos (last page)
+            if len(page_data) < 30:
+                break
+
+            page += 1  # Go to the next page
+        else:
+            print(f"Error fetching repositories: {response.status_code}")
+            break
+
+    return repos
 
 # Function to get open pull requests for a repository
 def get_open_pull_requests(owner, repo, headers):
@@ -59,6 +74,7 @@ def human_readable_date(iso_date_str):
 # Function to list all open pull requests for a user across all repositories
 def list_open_pull_requests(username, headers):
     repos = get_user_repos(username, headers)
+    print(json.dumps(repos))
 
     # Open the CSV file for writing
     with open('gh-pr.csv', mode='w', newline='', encoding='utf-8') as file:
